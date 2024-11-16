@@ -7,21 +7,21 @@ import javax.swing.filechooser.*;
 
 public class FamilyTree {
 
-    private static class TreeNode {
-        private String name;
-        private TreeNode parent;
-        private ArrayList<TreeNode> children;
+    private static class TreeNode<T> {
+        private T data;
+        private TreeNode<T> parent;
+        private ArrayList<TreeNode<T>> children;
 
-        TreeNode(String name) {
-            this.name = name;
+        TreeNode(T data) {
+            this.data = data;
             children = new ArrayList<>();
         }
 
-        String getName() {
-            return name;
+        T getData() {
+            return data;
         }
 
-        void addChild(TreeNode childNode) {
+        void addChild(TreeNode<T> childNode) {
             // Add childNode to this node's children list. Also
             // set childNode's parent to this node.
             children.add(childNode);
@@ -30,13 +30,13 @@ public class FamilyTree {
 
         // Searches subtree at this node for a node
         // with the given name. Returns the node, or null if not found.
-        TreeNode getNodeWithName(String targetName) {
+        TreeNode<T> getNodeWithName(T targetName) {
             // Does this node have the target name?
-            if (this.getName().equals(targetName))
+            if (this.getData().equals(targetName))
                 return this; //Anika
                     
             // No, recurse. Check all children of this node.
-            for (TreeNode child: children)
+            for (TreeNode<T> child: children)
             {
                 if (child.getNodeWithName(targetName) != null)
                 {
@@ -53,9 +53,9 @@ public class FamilyTree {
         // Returns a list of ancestors of this TreeNode, starting with this node’s
         // parent and
         // ending with the root. Order is from recent to ancient.
-        ArrayList<TreeNode> collectAncestorsToList() {
-            ArrayList<TreeNode> ancestors = new ArrayList<>();
-            TreeNode curNode = this.parent;
+        ArrayList<TreeNode<T>> collectAncestorsToList() {
+            ArrayList<TreeNode<T>> ancestors = new ArrayList<>();
+            TreeNode<T> curNode = this.parent;
             while (curNode != null)
             {
                 ancestors.add(curNode);
@@ -74,9 +74,9 @@ public class FamilyTree {
         }
 
         private String toStringWithIndent(String indent) {
-            String s = indent + name + "\n";
+            String s = indent + data + "\n";
             indent += "  ";
-            for (TreeNode childNode : children)
+            for (TreeNode<T> childNode : children)
                 s += childNode.toStringWithIndent(indent);
             return s;
         }
@@ -115,6 +115,7 @@ public class FamilyTree {
     //
     private void addLine(String line) throws TreeException
     {
+        // Extract parent and array of children.
         int colonIndex = line.indexOf(":"); //should be the index of the colon in line.
         if (colonIndex < 0)
             throw new TreeException("Colon is missing from line.");//throw a TreeException with a useful message
@@ -190,7 +191,7 @@ public class FamilyTree {
             FamilyTree tree = new FamilyTree();
             System.out.println("Tree:\n" + tree + "\n**************\n");
             TreeNode ancestor = tree.getMostRecentCommonAncestor("Bilbo", "Frodo");
-            System.out.println("Most recent common ancestor of Bilbo and Frodo is " + ancestor.getName());
+            // System.out.println("Most recent common ancestor of Bilbo and Frodo is " + ancestor.getData());
         } catch (IOException x) {
             System.out.println("IO trouble: " + x.getMessage());
         } catch (TreeException x) {
